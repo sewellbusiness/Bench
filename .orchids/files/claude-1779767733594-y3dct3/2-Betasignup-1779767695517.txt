@@ -1,0 +1,108 @@
+Endpoint
+URL: POST https://folio.sewelllabs.com/api/beta-signup
+
+Request headers:
+
+Content-Type: application/json
+x-api-key: <BETA_SIGNUP_SECRET value>
+Request body (JSON):
+
+{
+  "fullName": "Jane Smith",
+  "email": "jane@example.com",
+  "businessType": "Small business owner",
+  "entityCount": "2–3",
+  "usageDescription": "Managing books for multiple LLCs..."
+}
+Field rules:
+
+Field	Type	Required	Allowed values
+fullName	string	Yes	Any non-empty string
+email	string	Yes	Valid email format
+businessType	string	Yes	Freelancer / Self-employed · Small business owner · Multi-entity operator · Accountant / CPA · Other
+entityCount	string	Yes	1 · 2–3 · 4–7 · 8+
+usageDescription	string	Yes	Non-empty, max 300 characters
+Responses:
+
+Status	Meaning
+201	{ "success": true } — signup recorded
+400	Validation error — { "error": "..." } with reason
+401	Wrong or missing x-api-key
+403	Request not coming from https://sewellabs.com
+409	{ "error": "This email is already registered for the beta." }
+500	Server error
+
+BETA_SIGNUP_SECRET=f7k2mX9qLpR3vW8nT4hY6cZ1
+
+
+
+BETA_SIGNUP_ALLOWED_ORIGIN=https://sewellabs.com
+BETA_SIGNUP_SECRET=f7k2mX9qLpR3vW8nT4hY6cZ1
+
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name sewelllabs.com www.sewelllabs.com;
+    return 301 https://sewelllabs.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name www.sewelllabs.com;
+    ssl_certificate /etc/letsencrypt/live/sewelllabs.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/sewelllabs.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    return 301 https://sewelllabs.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name sewelllabs.com;
+    ssl_certificate /etc/letsencrypt/live/sewelllabs.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/sewelllabs.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    location / {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+cd /root/mailinabox && management/cli.py user password kevin@sewelllabs.com lost4ndFound32!
+
+curl -s -u kevin@sewelllabs.com:lost4ndFound32! https://localhost/admin/me
+
+curl -k -s -u kevin@sewelllabs.com:yournewpassword https://localhost/admin/me
+
+curl -k -s -u kevin@sewelllabs.com:lost4ndFound32! https://localhost/admin/me
+
+curl -k -s -u kevin@sewelllabs.com:lost4ndFound32! https://127.0.0.1:10222/me
+
+curl -k -m 10 -s -u kevin@sewelllabs.com:lost4ndFound32! http://127.0.0.1:10222/me
+
+
+
+
+DATABASE_URL=postgresql://foliouser:s3w3llLab%24sO987651234@localhost:5432/folio
+BETTER_AUTH_SECRET=BY4AeIR1hxt/bJc1W6zuQ52rCz125yaBxEeDARk7Q2o=
+NEXT_PUBLIC_APP_URL=https://folio.sewelllabs.com
+SEWELLLABS_API_KEY=f7k2mX9qLpR3vW8nT4hY6cZ1
+SEWELLLABS_ALLOWED_ORIGIN=https://sewellabs.com
+
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=clgz2d9d
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
+NEXT_PUBLIC_BETA_ENABLED=false
+SEWELLLABS_API_KEY=f7k2mX9qLpR3vW8nT4hY6cZ1
