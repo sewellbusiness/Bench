@@ -6,7 +6,7 @@ node_modules/
 out/
 
 # Environment
-.env*
+# .env* # Removed by Orchids to allow .env files
 
 # Misc
 .DS_Store
