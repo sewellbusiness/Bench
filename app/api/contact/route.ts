@@ -4,10 +4,13 @@ export async function POST(req: NextRequest) {
   const { name, email, message } = await req.json();
   if (!name || !email || !message) return NextResponse.json({ error:"Missing required fields." }, { status:400 });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error:"Invalid email address." }, { status:400 });
+  const port = Number(process.env.SMTP_PORT) || 465;
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST, port: Number(process.env.SMTP_PORT)||587,
-    secure: Number(process.env.SMTP_PORT)===465,
-    auth: { user:process.env.SMTP_USER, pass:process.env.SMTP_PASS },
+    host: process.env.SMTP_HOST,
+    port,
+    secure: port === 465,
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    tls: { rejectUnauthorized: false },
   });
   try {
     await transporter.sendMail({
